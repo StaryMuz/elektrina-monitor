@@ -35,10 +35,12 @@ def main():
     print(f"Stahuji data z: {url}")
 
     try:
-        df = pd.read_excel(url, skiprows=23, usecols="A,B", engine="openpyxl")
-        df.columns = ["Hodina", "Cena (EUR/MWh)"]
-    except Exception as e:
-        raise Exception(f"Chyba při čtení XLS: {e}")
+    df = pd.read_excel(url, skiprows=23, usecols="A,B", engine="openpyxl")
+    df.columns = ["Hodina", "Cena (EUR/MWh)"]
+    # ✅ Úprava formátu desetinných čísel
+    df["Cena (EUR/MWh)"] = df["Cena (EUR/MWh)"].astype(str).str.replace(",", ".").astype(float)
+except Exception as e:
+    raise Exception(f"Chyba při čtení XLS: {e}")
 
     df.dropna(inplace=True)
     df["Hodina"] = pd.to_numeric(df["Hodina"], errors="coerce").fillna(0).astype(int)
