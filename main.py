@@ -1,4 +1,4 @@
-def main():
+﻿def main():
     print("▶️ Spouštím skript...")
 # -*- coding: utf-8 -*-
 import requests
