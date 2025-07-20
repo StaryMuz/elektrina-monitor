@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -21,7 +22,7 @@ def posli_telegram_zpravu(token, chat_id, zprava, obrazek_cesta=None):
 
     response = requests.post(url, data=data, files=files)
     if response.status_code != 200:
-        raise Exception(f"Chyba pøi odesílání zprávy: {response.text}")
+        raise Exception(f"Chyba pÃ¸i odesÃ­lÃ¡nÃ­ zprÃ¡vy: {response.text}")
 
 def main():
     dnes = datetime.now()
@@ -35,7 +36,7 @@ def main():
         df = pd.read_excel(url, skiprows=23, usecols="A,B", engine="openpyxl")
         df.columns = ["Hodina", "Cena (EUR/MWh)"]
     except Exception as e:
-        raise Exception(f"Chyba pøi ètení XLS: {e}")
+        raise Exception(f"Chyba pÃ¸i Ã¨tenÃ­ XLS: {e}")
 
     df.dropna(inplace=True)
     df["Hodina"] = pd.to_numeric(df["Hodina"], errors="coerce").fillna(0).astype(int)
@@ -44,15 +45,15 @@ def main():
     cena_pod_limit = df[df["Cena (EUR/MWh)"] < LIMIT_EUR]
 
     if cena_pod_limit.empty:
-        zprava = f"?? Denní ceny elektøiny ({den}.{mesic}.{rok})\n? Cena neklesla pod {LIMIT_EUR} EUR/MWh"
+        zprava = f"?? DennÃ­ ceny elektÃ¸iny ({den}.{mesic}.{rok})\n? Cena neklesla pod {LIMIT_EUR} EUR/MWh"
     else:
-        zprava = f"?? Denní ceny elektøiny ({den}.{mesic}.{rok})\n? V nìkterých hodinách byla cena pod {LIMIT_EUR} EUR/MWh"
+        zprava = f"?? DennÃ­ ceny elektÃ¸iny ({den}.{mesic}.{rok})\n? V nÃ¬kterÃ½ch hodinÃ¡ch byla cena pod {LIMIT_EUR} EUR/MWh"
 
     # Vykresli graf
     plt.figure(figsize=(10, 5))
     plt.plot(df["Hodina"], df["Cena (EUR/MWh)"], marker="o", label="Cena")
     plt.axhline(y=LIMIT_EUR, color="r", linestyle="--", label=f"Limit {LIMIT_EUR} EUR")
-    plt.title(f"Cena elektøiny {den}.{mesic}.{rok}")
+    plt.title(f"Cena elektÃ¸iny {den}.{mesic}.{rok}")
     plt.xlabel("Hodina")
     plt.ylabel("Cena (EUR/MWh)")
     plt.grid(True)
