@@ -1,6 +1,8 @@
-﻿def main():
-    print("▶️ Spouštím skript...")
 # -*- coding: utf-8 -*-
+
+def main():
+    print("▶️ Spouštím skript...")
+
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
