@@ -20,6 +20,12 @@ def posli_telegram_zpravu(token, chat_id, zprava, obrazek_cesta=None):
     else:
         data["text"] = zprava
 
+    print("📤 Odesílám zprávu do Telegramu…")
+    response = requests.post(url, data=data, files=files)
+    print(f"✅ Telegram odpověděl: {response.status_code}")
+    if response.status_code != 200:
+        raise Exception(f"❌ Chyba při odesílání zprávy: {response.text}")
+
 def main():
     dnes = datetime.now()
     den = dnes.strftime("%d")
@@ -40,39 +46,33 @@ def main():
     df.dropna(inplace=True)
     df["Hodina"] = pd.to_numeric(df["Hodina"], errors="coerce").fillna(0).astype(int)
 
-    # Převede čárky na tečky, např. 12,00 → 12.00
+    # Převede čárky na tečky (např. 12,00 → 12.00) a převede na čísla
     df["Cena (EUR/MWh)"] = df["Cena (EUR/MWh)"].astype(str).str.replace(",", ".")
     df["Cena (EUR/MWh)"] = pd.to_numeric(df["Cena (EUR/MWh)"], errors="coerce")
     
     df = df[df["Hodina"] >= 1]
-
     cena_pod_limit = df[df["Cena (EUR/MWh)"] < LIMIT_EUR]
 
-# ✅ Zprávu a graf odeslat jen pokud existují hodiny s cenou pod limitem
-if not cena_pod_limit.empty:
-    den = dnes.strftime("%d")
-    mesic = dnes.strftime("%m")
-    rok = dnes.strftime("%Y")
-    zprava = f"📈 Denní ceny elektřiny ({den}.{mesic}.{rok})\n✅ V některých hodinách byla cena pod {LIMIT_EUR} EUR/MWh"
+    if not cena_pod_limit.empty:
+        zprava = f"📈 Denní ceny elektřiny ({den}.{mesic}.{rok})\n✅ V některých hodinách byla cena pod {LIMIT_EUR} EUR/MWh"
 
-    print("🧾 Generuji graf…")
-    plt.figure(figsize=(10, 5))
-    plt.plot(df["Hodina"], df["Cena (EUR/MWh)"], marker="o", label="Cena")
-    plt.axhline(y=LIMIT_EUR, color="r", linestyle="--", label=f"Limit {LIMIT_EUR} EUR")
-    plt.title(f"Cena elektřiny {den}.{mesic}.{rok}")
-    plt.xlabel("Hodina")
-    plt.ylabel("Cena (EUR/MWh)")
-    plt.grid(True)
-    plt.legend()
-    obrazek = "graf.png"
-    plt.savefig(obrazek)
-    plt.close()
-    print("✅ Graf uložen jako graf.png")
+        print("🧾 Generuji graf…")
+        plt.figure(figsize=(10, 5))
+        plt.plot(df["Hodina"], df["Cena (EUR/MWh)"], marker="o", label="Cena")
+        plt.axhline(y=LIMIT_EUR, color="r", linestyle="--", label=f"Limit {LIMIT_EUR} EUR")
+        plt.title(f"Cena elektřiny {den}.{mesic}.{rok}")
+        plt.xlabel("Hodina")
+        plt.ylabel("Cena (EUR/MWh)")
+        plt.grid(True)
+        plt.legend()
+        obrazek = "graf.png"
+        plt.savefig(obrazek)
+        plt.close()
+        print("✅ Graf uložen jako graf.png")
 
-    posli_telegram_zpravu(TELEGRAM_BOT_TOKEN, CHAT_ID, zprava, obrazek)
-
-else:
-    print(f"ℹ️ Cena neklesla pod {LIMIT_EUR} EUR – zpráva nebude odeslána.")
+        posli_telegram_zpravu(TELEGRAM_BOT_TOKEN, CHAT_ID, zprava, obrazek_cesta=obrazek)
+    else:
+        print(f"ℹ️ Cena neklesla pod {LIMIT_EUR} EUR – zpráva nebude odeslána.")
 
 if __name__ == "__main__":
     try:
