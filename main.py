@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -19,12 +19,6 @@ def posli_telegram_zpravu(token, chat_id, zprava, obrazek_cesta=None):
         data["caption"] = zprava
     else:
         data["text"] = zprava
-
-    print("📤 Odesílám zprávu do Telegramu…")
-    response = requests.post(url, data=data, files=files)
-    print(f"✅ Telegram odpověděl: {response.status_code}")
-    if response.status_code != 200:
-        raise Exception(f"❌ Chyba při odesílání zprávy: {response.text}")
 
 def main():
     dnes = datetime.now()
