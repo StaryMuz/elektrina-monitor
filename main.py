@@ -54,10 +54,12 @@ def main():
 
     cena_pod_limit = df[df["Cena (EUR/MWh)"] < LIMIT_EUR]
 
-    if cena_pod_limit.empty:
-        zprava = f"📈 Denní ceny elektřiny ({den}.{mesic}.{rok})\n❌ Cena neklesla pod {LIMIT_EUR} EUR/MWh"
-    else:
-        zprava = f"📈 Denní ceny elektřiny ({den}.{mesic}.{rok})\n✅ V některých hodinách byla cena pod {LIMIT_EUR} EUR/MWh"
+# ✅ Zprávu a graf odeslat jen pokud existují hodiny s cenou pod limitem
+if not cena_pod_limit.empty:
+    den = dnes.strftime("%d")
+    mesic = dnes.strftime("%m")
+    rok = dnes.strftime("%Y")
+    zprava = f"📈 Denní ceny elektřiny ({den}.{mesic}.{rok})\n✅ V některých hodinách byla cena pod {LIMIT_EUR} EUR/MWh"
 
     print("🧾 Generuji graf…")
     plt.figure(figsize=(10, 5))
@@ -74,6 +76,9 @@ def main():
     print("✅ Graf uložen jako graf.png")
 
     posli_telegram_zpravu(TELEGRAM_BOT_TOKEN, CHAT_ID, zprava, obrazek)
+
+else:
+    print(f"ℹ️ Cena neklesla pod {LIMIT_EUR} EUR – zpráva nebude odeslána.")
 
 if __name__ == "__main__":
     try:
