@@ -7,7 +7,7 @@ import os
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.environ.get("CHAT_ID")
-LIMIT_EUR = 12.0
+LIMIT_EUR = 13.0
 
 def posli_telegram_zpravu(token, chat_id, zprava, obrazek_cesta=None):
     url = f"https://api.telegram.org/bot{token}/sendPhoto" if obrazek_cesta else f"https://api.telegram.org/bot{token}/sendMessage"
