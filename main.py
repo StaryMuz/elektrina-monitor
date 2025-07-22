@@ -54,7 +54,18 @@ def main():
     cena_pod_limit = df[df["Cena (EUR/MWh)"] < LIMIT_EUR]
 
     if not cena_pod_limit.empty:
-        zprava = f"📈 Denní ceny elektřiny ({den}.{mesic}.{rok})\n✅ V některých hodinách byla cena pod {LIMIT_EUR} EUR/MWh"
+
+        prvni_hodina = int(cena_pod_limit["Hodina"].min())
+        posledni_hodina = int(cena_pod_limit["Hodina"].max())
+
+        if prvni_hodina == posledni_hodina:
+            rozsah_text = f"v {prvni_hodina}. hodině"
+        else:
+            rozsah_text = f"od {prvni_hodina}. do {posledni_hodina}. hodiny"
+
+        zprava = (
+            f"📈 Denní ceny elektřiny ({den}.{mesic}.{rok})\n"
+            f"✅ Cena byla pod {LIMIT_EUR} EUR/MWh {rozsah_text}.")
 
         print("🧾 Generuji graf…")
         plt.figure(figsize=(10, 5))
