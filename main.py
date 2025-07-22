@@ -83,7 +83,8 @@ def main():
 
         posli_telegram_zpravu(TELEGRAM_BOT_TOKEN, CHAT_ID, zprava, obrazek_cesta=obrazek)
     else:
-        print(f"ℹ️ Cena neklesla pod {LIMIT_EUR} EUR – zpráva nebude odeslána.")
+        posli_telegram_zpravu(TELEGRAM_BOT_TOKEN, CHAT_ID, f"❌ Ceny nad limitem.")
+        # print(f"ℹ️ Cena neklesla pod {LIMIT_EUR} EUR – zpráva nebude odeslána.")
 
 if __name__ == "__main__":
     try:
