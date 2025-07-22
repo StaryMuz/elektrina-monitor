@@ -64,8 +64,8 @@ def main():
             rozsah_text = f"od {prvni_hodina-1}. do {posledni_hodina}. hodiny"
 
         zprava = (
-            f"📈 Denní ceny elektřiny ({den}.{mesic}.{rok})\n"
-            f"✅ Cena byla pod {LIMIT_EUR} EUR/MWh {rozsah_text}.")
+            f"📈 Ceny elektřiny {den}.{mesic}.{rok}\n"
+            f"✅ Cena pod limit {rozsah_text}.")
 
         print("🧾 Generuji graf…")
         plt.figure(figsize=(10, 5))
