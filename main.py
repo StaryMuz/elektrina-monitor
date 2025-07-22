@@ -59,9 +59,9 @@ def main():
         posledni_hodina = int(cena_pod_limit["Hodina"].max())
 
         if prvni_hodina == posledni_hodina:
-            rozsah_text = f"v {prvni_hodina}. hodině"
+            rozsah_text = f"od {prvni_hodina-1}. do {prvni_hodina}. hodiny"
         else:
-            rozsah_text = f"od {prvni_hodina}. do {posledni_hodina}. hodiny"
+            rozsah_text = f"od {prvni_hodina-1}. do {posledni_hodina}. hodiny"
 
         zprava = (
             f"📈 Denní ceny elektřiny ({den}.{mesic}.{rok})\n"
