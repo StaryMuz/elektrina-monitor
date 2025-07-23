@@ -2,7 +2,7 @@ name: Spustit denní kontrolu cen
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # každý den v 6:00 UTC = 8:00 SEČ
+    - cron: '0 5 * * *'  # každý den v 6:00 UTC = 8:00 SEČ
   workflow_dispatch:
 
 jobs:
