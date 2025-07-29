@@ -65,7 +65,7 @@ def main():
 
         zprava = (
             f"📈 Ceny elektřiny {den}.{mesic}.{rok}\n"
-            f"✅ Cena pod limit {rozsah_text}.")
+            f"❗ Cena pod limit {rozsah_text}.")
 
         print("🧾 Generuji graf…")
         plt.figure(figsize=(10, 5))
@@ -83,8 +83,8 @@ def main():
 
         posli_telegram_zpravu(TELEGRAM_BOT_TOKEN, CHAT_ID, zprava, obrazek_cesta=obrazek)
     else:
-        posli_telegram_zpravu(TELEGRAM_BOT_TOKEN, CHAT_ID, f"❌ Ceny nad limitem.")
-        # print(f"ℹ️ Cena neklesla pod {LIMIT_EUR} EUR – zpráva nebude odeslána.")
+        posli_telegram_zpravu(TELEGRAM_BOT_TOKEN, CHAT_ID, f"ℹ️ Ceny nad limitem.")
+        # print(f"ℹ️ Cena neklesla pod {LIMIT_EUR} EUR – zprℹáva nebude odeslána.")
 
 if __name__ == "__main__":
     try:
