@@ -46,7 +46,7 @@ def main():
     df.dropna(inplace=True)
     df["Hodina"] = pd.to_numeric(df["Hodina"], errors="coerce").fillna(0).astype(int)
 
-    # Převede čárky na tečky (např. 12,00 → 12.00) a převede na čísla
+    # Převede čárky na tečky a převede na čísla
     df["Cena (EUR/MWh)"] = df["Cena (EUR/MWh)"].astype(str).str.replace(",", ".")
     df["Cena (EUR/MWh)"] = pd.to_numeric(df["Cena (EUR/MWh)"], errors="coerce")
     
@@ -54,18 +54,38 @@ def main():
     cena_pod_limit = df[df["Cena (EUR/MWh)"] < LIMIT_EUR]
 
     if not cena_pod_limit.empty:
+        # Najdeme souvislé bloky hodin pod limitem
+        intervals = []
+        start = None
+        prev = None
 
-        prvni_hodina = int(cena_pod_limit["Hodina"].min())
-        posledni_hodina = int(cena_pod_limit["Hodina"].max())
+        for hodina in cena_pod_limit["Hodina"]:
+            if start is None:
+                start = hodina
+                prev = hodina
+            elif hodina == prev + 1:
+                prev = hodina
+            else:
+                intervals.append((start, prev))
+                start = hodina
+                prev = hodina
 
-        if prvni_hodina == posledni_hodina:
-            rozsah_text = f"od {prvni_hodina-1}. do {prvni_hodina}. hodin"
-        else:
-            rozsah_text = f"od {prvni_hodina-1}. do {posledni_hodina}. hodin"
+        if start is not None:
+            intervals.append((start, prev))
 
+        # Vytvoříme text s výpisem všech intervalů
+        intervaly_text = []
+        for s, e in intervals:
+            if s == e:
+                intervaly_text.append(f"{s-1}.–{s}. hod")
+            else:
+                intervaly_text.append(f"{s-1}.–{e}. hod")
+        
         zprava = (
             f"📈 Ceny elektřiny {den}.{mesic}.{rok}\n"
-            f"❗ Cena pod limit {rozsah_text}.")
+            f"❗ Cena pod limitem {LIMIT_EUR} EUR v časech:\n"
+            + "\n".join([f"• {t}" for t in intervaly_text])
+        )
 
         print("🧾 Generuji graf…")
         plt.figure(figsize=(10, 5))
@@ -84,7 +104,6 @@ def main():
         posli_telegram_zpravu(TELEGRAM_BOT_TOKEN, CHAT_ID, zprava, obrazek_cesta=obrazek)
     else:
         posli_telegram_zpravu(TELEGRAM_BOT_TOKEN, CHAT_ID, f"ℹ️ Ceny nad limitem.")
-        # print(f"ℹ️ Cena neklesla pod {LIMIT_EUR} EUR – zprℹáva nebude odeslána.")
 
 if __name__ == "__main__":
     try:
