@@ -77,9 +77,9 @@ def main():
         intervaly_text = []
         for s, e in intervals:
             if s == e:
-                intervaly_text.append(f"{s-1}.–{s+1}. hod")
+                intervaly_text.append(f"{s-1}.–{s}. hod")
             else:
-                intervaly_text.append(f"{s-1}.–{e+1}. hod")
+                intervaly_text.append(f"{s-1}.–{e}. hod")
         
         zprava = (
             f"📈 Ceny elektřiny {den}.{mesic}.{rok}\n"
@@ -111,4 +111,5 @@ if __name__ == "__main__":
         print("✅ Skript dokončen.")
     except Exception as e:
         print(f"❌ Chyba ve skriptu: {e}")
+
 
