@@ -35,7 +35,7 @@ def main():
     
     print(f"⬇️ Stahuji data z: {url}")
     try:
-        df = pd.read_excel(url, skiprows=23, usecols="A,B", engine="openpyxl")
+        df = pd.read_excel(url, skiprows=22, usecols="A,B", engine="openpyxl")
         df.columns = ["Hodina", "Cena (EUR/MWh)"]
     except Exception as e:
         raise Exception(f"❌ Chyba při čtení XLS: {e}")
@@ -77,9 +77,9 @@ def main():
         intervaly_text = []
         for s, e in intervals:
             if s == e:
-                intervaly_text.append(f"{s-1}.–{s}. hod")
+                intervaly_text.append(f"{s-1}.–{s+1}. hod")
             else:
-                intervaly_text.append(f"{s-1}.–{e}. hod")
+                intervaly_text.append(f"{s-1}.–{e+1}. hod")
         
         zprava = (
             f"📈 Ceny elektřiny {den}.{mesic}.{rok}\n"
@@ -111,3 +111,4 @@ if __name__ == "__main__":
         print("✅ Skript dokončen.")
     except Exception as e:
         print(f"❌ Chyba ve skriptu: {e}")
+
